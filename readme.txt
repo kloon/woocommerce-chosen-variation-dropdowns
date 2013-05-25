@@ -4,7 +4,7 @@ Tags: woocommerce, ecommerce, products, chosen, dropdown
 Requires at least: 3.5
 Tested up to: 3.5
 Stable tag: 0.1
-License: GPLv3or later
+License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
 Transform the variation dropdowns on your product pages to Chosen dropdowns.
@@ -23,13 +23,14 @@ Please feel free to contribute on <a href="https://github.com/kloon/woocommerce-
 
 == Frequently Asked Questions ==
 
-= Where are the options? =
+= Where do I disable the search box? =
 
-The WooCommerce Chosen Variation Dropdowns extension for WooCommerce has not option, one activated it will automatically load the correct functionality to display chosen variation dropdowns on product pages.
+The search box can be disabled under `WooCommerce -> Settings -> Catalog` selecting the `Disable Product Chosen Search` option and saving the settings.
 
 == Screenshots ==
 
 1. An example product page with chosen variation dropdowns.
+1. An example product page with Chosen variation dropdowns with search disabled.
 
 == Changelog ==
 
