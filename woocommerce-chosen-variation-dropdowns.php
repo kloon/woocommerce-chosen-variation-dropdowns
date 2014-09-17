@@ -78,9 +78,7 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 					// Get options and build options associate array
 					if ( get_option( 'wc_chosen_variation_search_disabled' ) == 'yes' ){
 						$options = array( 'disable_search' => 'true' );
-					} else {
-						$options = array( 'disable_search' => 'false' );
-					}				
+					}			
 
 					wp_register_script( 'chosen-variations', plugin_dir_url( __FILE__ ) . "/chosen-variations.js" );
 					wp_enqueue_script( 'chosen-variations' );
