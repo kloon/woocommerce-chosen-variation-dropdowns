@@ -1,0 +1,1 @@
+jQuery('.variations select').chosen(php_vars);

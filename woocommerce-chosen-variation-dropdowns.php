@@ -70,9 +70,10 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 						$js_options = '{' . implode( ',', $new_options ) . '}';
 					}
 
-					$woocommerce->add_inline_js( "
-						jQuery('.variations select').chosen(" . $js_options . ");
-					" );
+					wp_register_script( 'chosen-variations', plugin_dir_url( __FILE__ ) . "/chosen-variations.js" );
+					wp_enqueue_script( 'chosen-variations' );
+				    wp_localize_script( 'chosen-variations', 'php_vars', $js_options );
+
 				}
 			}
 		}
