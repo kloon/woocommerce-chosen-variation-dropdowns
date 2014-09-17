@@ -22,31 +22,50 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 		class WC_Chosen_Variation_Dropdowns {
 
 			function __construct() {
-				add_filter( 'woocommerce_catalog_settings', array( $this, 'register_settings' ) );
-				add_action( 'wp_enqueue_scripts', array( $this, 'register_scripts' ) );
+				add_action( 'wp_enqueue_scripts', array( $this, 'cv_register_scripts' ) );
+				add_filter( 'woocommerce_settings_tabs_array', array( $this, 'cv_add_settings_tab'), 50 );
+				add_action( 'woocommerce_settings_tabs_chosen_variations', array( $this, 'cv_settings_tab') );
+				add_action( 'woocommerce_update_options_chosen_variations', array( $this, 'cv_update_settings') );
 			}
 
-			function register_settings( $settings ) {
-				$newsettings = array();
-				foreach ( $settings as $key => $value ) {
-					if ( $key == 6 ) {
-						$newsettings[] = array(
-							'title'		=> __( 'Disable Product Chosen Search', 'woocommerce' ),
-							'desc' 		=> __( 'Disable Chosen search field on product variation dropdowns.', 'woocommerce' ),
-							'id' 		=> 'woocommerce_chosen_variation_search_disabled',
-							'default'	=> 'no',
-							'type' 		=> 'checkbox',
-							'checkboxgroup'		=> 'start'
-						);
-						$newsettings[] = $value;
-					} else {
-						$newsettings[] = $value;
-					}
-				}
-				return $newsettings;
+			function cv_add_settings_tab( $settings_tabs ) {
+		        $settings_tabs['chosen_variations'] = __( 'Chosen Variations', 'wc-chosen-variations-tab' );
+		        return $settings_tabs;
+		    }
+		    function cv_settings_tab() {
+			    woocommerce_admin_fields( self::cv_get_settings() );
 			}
 
-			function register_scripts() {
+			function cv_update_settings() {
+			    woocommerce_update_options( self::cv_get_settings() );
+			}
+			 
+			function cv_get_settings() {
+
+				$settings = array(
+		            'section_title' => array(
+		                'name'     => __( 'Disable Product Chosen Search', 'woocommerce-chosen_variations' ),
+		                'type'     => 'title',
+		                'desc'     => 'Disable Chosen search field on product variation dropdowns.',
+		                'id'       => 'wc_chosen_variations_section_title'
+		            ),
+		            'title' => array(
+		                'name' => __( 'Disable Chosen Search?', 'woocommerce-chosen_variations' ),
+		                'id' 		=> 'wc_chosen_variation_search_disabled',
+						'default'	=> 'no',
+						'type' 		=> 'checkbox',
+						'checkboxgroup'		=> 'start'
+		            ),
+		            'section_end' => array(
+		                 'type' => 'sectionend',
+		                 'id' => 'wc_chosen_variations_section_end'
+		            )
+		        );
+		 
+		        return apply_filters( 'wc_chosen_variations_settings', $settings );
+			}
+
+			function cv_register_scripts() {
 				if ( apply_filters( 'woocommerce_is_product_chosen_dropdown', is_singular( 'product' ) ) ) {
 					global $woocommerce;
 					$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
@@ -56,23 +75,16 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 					wp_enqueue_script( 'chosen' );
 					wp_enqueue_style( 'woocommerce_chosen_styles', $woocommerce->plugin_url() . '/assets/css/chosen.css' );
 
-					// Get options and build options string
-					$options = array();
-					$new_options = array();
-					$js_options = '';
-					if ( get_option( 'woocommerce_chosen_variation_search_disabled' ) == 'yes' )
-						$options['disable_search'] = 'true';
-
-					if ( ! empty( $options ) ) {
-						foreach ( $options as $key => $value ) {
-							$new_options[] = $key . ': ' . $value;
-						}
-						$js_options = '{' . implode( ',', $new_options ) . '}';
-					}
+					// Get options and build options associate array
+					if ( get_option( 'wc_chosen_variation_search_disabled' ) == 'yes' ){
+						$options = array( 'disable_search' => 'true' );
+					} else {
+						$options = array( 'disable_search' => 'false' );
+					}				
 
 					wp_register_script( 'chosen-variations', plugin_dir_url( __FILE__ ) . "/chosen-variations.js" );
 					wp_enqueue_script( 'chosen-variations' );
-				    wp_localize_script( 'chosen-variations', 'php_vars', $js_options );
+				    wp_localize_script( 'chosen-variations', 'php_vars', $options );
 
 				}
 			}
