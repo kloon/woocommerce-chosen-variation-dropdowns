@@ -36,3 +36,6 @@ The search box can be disabled under `WooCommerce -> Settings -> Catalog` select
 
 = 0.1 =
 Initial release.
+
+= 0.2 =
+Removed inline js and added seperate js file to comply with WooCommerce new release.
